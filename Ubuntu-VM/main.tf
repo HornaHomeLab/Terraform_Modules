@@ -14,7 +14,8 @@ resource "proxmox_vm_qemu" "vm" {
   target_node = var.target_node
   
   tablet = false
-
+  
+  onboot = true
   clone = "ubuntu-cloud-init-template"
   full_clone = true
 

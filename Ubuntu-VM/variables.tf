@@ -14,8 +14,8 @@ variable "vmid" {
 }
 variable "tags" {
   description = "The tags of the VM"
-  type = list(string)
-  default = null
+  type        = list(string)
+  default     = null
 }
 variable "target_node" {
   description = "The target node to deploy the VM"
@@ -41,6 +41,18 @@ variable "ssh_pubkey_file" {
   description = "The path to the ssh public key file"
   type        = string
   default     = "../secrets/key/id_rsa.pub"
+}
+variable "ssh_pubkey" {
+  description = "Actual ssh public key"
+  type        = string
+  sensitive   = true
+  default     = null
+}
+variable "default_password" {
+  description = "Actual default password"
+  type        = string
+  sensitive   = true
+  default     = null
 }
 variable "default_password_file" {
   description = "The path to the default password file"

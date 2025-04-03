@@ -55,12 +55,12 @@ resource "proxmox_vm_qemu" "vm" {
 
   ciupgrade  = false
   ciuser     = "proxmox"
-  cipassword = data.local_sensitive_file.default_password.content
+  cipassword = var.default_password != null ? var.default_password : data.local_sensitive_file.default_password.content
   skip_ipv6  = true
   nameserver = join(",", var.dns_servers)
   ipconfig0  = "ip=${var.ip_address}/${var.cidr_netmask},gw=${var.gateway}"
 
-  sshkeys = data.local_sensitive_file.ssh_pubkey.content
+  sshkeys = var.ssh_pubkey != null ? var.ssh_pubkey : data.local_sensitive_file.ssh_pubkey.content
 }
 
 output "deployed_vms" {

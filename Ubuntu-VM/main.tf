@@ -7,6 +7,17 @@ data "local_sensitive_file" "default_password" {
   filename = var.default_password_file
 }
 
+locals {
+  # Use [0] if the data source exists, otherwise fall back to null
+  ssh_pubkey_content = var.ssh_pubkey != null ? var.ssh_pubkey : (
+    length(data.local_sensitive_file.ssh_pubkey) > 0 ? data.local_sensitive_file.ssh_pubkey[0].content : null
+  )
+
+  default_password_content = var.default_password != null ? var.default_password : (
+    length(data.local_sensitive_file.default_password) > 0 ? data.local_sensitive_file.default_password[0].content : null
+  )
+}
+
 
 resource "proxmox_vm_qemu" "vm" {
   name        = var.vm_name
@@ -57,12 +68,12 @@ resource "proxmox_vm_qemu" "vm" {
 
   ciupgrade  = false
   ciuser     = "proxmox"
-  cipassword = var.default_password != null ? var.default_password : data.local_sensitive_file.default_password.content
+  cipassword = local.default_password_content
   skip_ipv6  = true
   nameserver = join(",", var.dns_servers)
   ipconfig0  = "ip=${var.ip_address}/${var.cidr_netmask},gw=${var.gateway}"
 
-  sshkeys = var.ssh_pubkey != null ? var.ssh_pubkey : data.local_sensitive_file.ssh_pubkey.content
+  sshkeys = local.ssh_pubkey_content
 }
 
 output "deployed_vms" {

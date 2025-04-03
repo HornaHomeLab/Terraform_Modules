@@ -1,8 +1,10 @@
 data "local_sensitive_file" "ssh_pubkey" {
-  filename = var.ssh_pubkey_file != null ? data.local_sensitive_file.ssh_pubkey.content : null
+  count    = var.ssh_pubkey_file != null ? 1 : 0
+  filename = var.ssh_pubkey_file
 }
 data "local_sensitive_file" "default_password" {
-  filename = var.default_password_file != null ? data.local_sensitive_file.default_password.content : null
+  count    = var.default_password_file != null ? 1 : 0
+  filename = var.default_password_file
 }
 
 
@@ -10,16 +12,16 @@ resource "proxmox_vm_qemu" "vm" {
   name        = var.vm_name
   desc        = var.vm_desc
   vmid        = var.vmid != null ? var.vmid : null
-  tags        = join(",",concat(var.tags != null ? var.tags : [], ["terraform","ubuntu-24-04"]))
+  tags        = join(",", concat(var.tags != null ? var.tags : [], ["terraform", "ubuntu-24-04"]))
   target_node = var.target_node
-  
+
   tablet = false
-  
-  onboot = true
-  clone = "ubuntu-cloud-init-template"
+
+  onboot     = true
+  clone      = "ubuntu-cloud-init-template"
   full_clone = true
 
-  agent  = 1
+  agent = 1
 
   os_type = "cloud-init"
   cores   = var.cores

@@ -1,8 +1,8 @@
 data "local_sensitive_file" "ssh_pubkey" {
-  filename = var.ssh_pubkey_file
+  filename = var.ssh_pubkey_file != null ? data.local_sensitive_file.ssh_pubkey.content : null
 }
 data "local_sensitive_file" "default_password" {
-  filename = var.default_password_file
+  filename = var.default_password_file != null ? data.local_sensitive_file.default_password.content : null
 }
 
 
